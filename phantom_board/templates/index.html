@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👻 PHANTOM — Security Intelligence Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a0a2e, #0a0a0a);
+            padding: 20px 40px;
+            border-bottom: 2px solid #8b00ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 2em;
+            color: #8b00ff;
+            text-shadow: 0 0 20px #8b00ff;
+        }
+
+        .live-badge {
+            background: #ff0040;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card h3 {
+            color: #888;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .red { color: #ff0040; }
+        .blue { color: #00aaff; }
+        .purple { color: #8b00ff; }
+        .green { color: #00ff88; }
+
+        .score-section {
+            margin: 0 30px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .score-title {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #8b00ff;
+        }
+
+        .score-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score-red, .score-blue {
+            flex: 1;
+            text-align: center;
+        }
+
+        .score-red .score-num { color: #ff0040; font-size: 3em; font-weight: bold; }
+        .score-blue .score-num { color: #00aaff; font-size: 3em; font-weight: bold; }
+
+        .bar-container {
+            flex: 2;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .bar-red {
+            background: linear-gradient(90deg, #ff0040, #ff6600);
+            transition: width 1s;
+        }
+
+        .bar-blue {
+            background: linear-gradient(90deg, #00aaff, #00ff88);
+            transition: width 1s;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .section h2 {
+            color: #8b00ff;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .alert-item {
+            background: #1a1a1a;
+            border-left: 3px solid #ff0040;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+
+        .kill-item {
+            background: #1a1a1a;
+            border-left: 3px solid #8b00ff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .kill-item .tactic {
+            color: #8b00ff;
+            font-size: 0.75em;
+            text-transform: uppercase;
+        }
+
+        .kill-item .technique {
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .port-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #222;
+            font-size: 0.85em;
+        }
+
+        .port-open { color: #ff0040; }
+        .port-num { color: #00aaff; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #444;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>👻 PHANTOM</h1>
+    <div>Real-time Attack Simulation & Defense Intelligence</div>
+    <div class="live-badge">🔴 LIVE</div>
+</header>
+
+<!-- Stats Cards -->
+<div class="grid">
+    <div class="card">
+        <h3>Total Alerts</h3>
+        <div class="value red" id="total-alerts">-</div>
+    </div>
+    <div class="card">
+        <h3>Open Ports</h3>
+        <div class="value blue" id="total-ports">-</div>
+    </div>
+    <div class="card">
+        <h3>Critical CVEs</h3>
+        <div class="value red" id="critical-cves">-</div>
+    </div>
+    <div class="card">
+        <h3>Kill Chain Steps</h3>
+        <div class="value purple" id="kill-chain-steps">-</div>
+    </div>
+</div>
+
+<!-- Score Red vs Blue -->
+<div class="score-section">
+    <div class="score-title">⚔️ RED TEAM vs BLUE TEAM</div>
+    <div class="score-bar">
+        <div class="score-red">
+            <div>🔴 RED TEAM</div>
+            <div class="score-num" id="red-score">0</div>
+            <div>pts</div>
+        </div>
+        <div class="bar-container">
+            <div class="bar-red" id="bar-red" style="width:50%"></div>
+            <div class="bar-blue" id="bar-blue" style="width:50%"></div>
+        </div>
+        <div class="score-blue">
+            <div>🔵 BLUE TEAM</div>
+            <div class="score-num" id="blue-score">0</div>
+            <div>pts</div>
+        </div>
+    </div>
+</div>
+
+<!-- Sections -->
+<div class="sections">
+
+    <!-- Alertes -->
+    <div class="section">
+        <h2>🚨 Alertes Détectées</h2>
+        <div id="alerts-list">Chargement...</div>
+    </div>
+
+    <!-- Kill Chain -->
+    <div class="section">
+        <h2>🗺️ Kill Chain MITRE ATT&CK</h2>
+        <div id="killchain-list">Chargement...</div>
+    </div>
+
+    <!-- Ports -->
+    <div class="section">
+        <h2>🔍 Ports Découverts</h2>
+        <div id="ports-list">Chargement...</div>
+    </div>
+
+    <!-- CVEs -->
+    <div class="section">
+        <h2>⚠️ CVEs Critiques</h2>
+        <div id="cves-list">Chargement...</div>
+    </div>
+
+</div>
+
+<footer>
+    👻 PHANTOM — Real-time Attack Simulation & Defense Intelligence Platform
+</footer>
+
+<script>
+    async function fetchData(endpoint) {
+        const response = await fetch(endpoint);
+        return response.json();
+    }
+
+    async function updateDashboard() {
+        // Summary
+        const summary = await fetchData('/api/summary');
+        document.getElementById('total-alerts').textContent = summary.total_alerts;
+        document.getElementById('total-ports').textContent = summary.total_ports;
+        document.getElementById('critical-cves').textContent = summary.critical_cves;
+        document.getElementById('kill-chain-steps').textContent = summary.kill_chain_steps;
+        document.getElementById('red-score').textContent = summary.red_score;
+        document.getElementById('blue-score').textContent = summary.blue_score;
+
+        // Score bars
+        const total = summary.red_score + summary.blue_score || 1;
+        const redPct = (summary.red_score / total * 100).toFixed(1);
+        const bluePct = (summary.blue_score / total * 100).toFixed(1);
+        document.getElementById('bar-red').style.width = redPct + '%';
+        document.getElementById('bar-blue').style.width = bluePct + '%';
+
+        // Alertes
+        const alerts = await fetchData('/api/alerts');
+        const alertsDiv = document.getElementById('alerts-list');
+        if (alerts.length === 0) {
+            alertsDiv.innerHTML = '<div style="color:#444">Aucune alerte</div>';
+        } else {
+            alertsDiv.innerHTML = alerts.map(a => `
+                <div class="alert-item">
+                    <div>${a.severity} — ${a.message}</div>
+                    <div style="color:#888">${a.src_ip} → ${a.dst_ip}:${a.dst_port}</div>
+                    <div style="color:#8b00ff">${a.mitre}</div>
+                    <div style="color:#444">${a.timestamp}</div>
+                </div>
+            `).join('');
+        }
+
+        // Kill Chain
+        const killchain = await fetchData('/api/killchain');
+        const killDiv = document.getElementById('killchain-list');
+        if (killchain.length === 0) {
+            killDiv.innerHTML = '<div style="color:#444">Kill chain vide</div>';
+        } else {
+            killDiv.innerHTML = killchain.map(k => `
+                <div class="kill-item">
+                    <div class="tactic">${k.tactic}</div>
+                    <div class="technique">${k.id} — ${k.name}</div>
+                    <div style="color:#888">${k.severity || ''}</div>
+                </div>
+            `).join('');
+        }
+
+        // Ports
+        const scan = await fetchData('/api/scan');
+        const portsDiv = document.getElementById('ports-list');
+        let portsHTML = '';
+        for (const [host, data] of Object.entries(scan)) {
+            for (const port of data.ports || []) {
+                portsHTML += `
+                    <div class="port-item">
+                        <span class="port-num">:${port.port}</span>
+                        <span>${port.service}</span>
+                        <span style="color:#888">${port.version}</span>
+                        <span class="port-open">OPEN</span>
+                    </div>
+                `;
+            }
+        }
+        portsDiv.innerHTML = portsHTML || '<div style="color:#444">Aucun port</div>';
+
+        // CVEs
+        const intel = await fetchData('/api/intel');
+        const cvesDiv = document.getElementById('cves-list');
+        let cvesHTML = '';
+        for (const [host, services] of Object.entries(intel)) {
+            for (const service of services) {
+                for (const cve of service.cves || []) {
+                    if (cve.severity === 'CRITICAL' || cve.severity === 'HIGH') {
+                        cvesHTML += `
+                            <div class="alert-item">
+                                <div style="color:#ff0040">${cve.id} — ${cve.severity}</div>
+                                <div style="color:#888">${service.service} ${service.version}</div>
+                                <div style="color:#666;font-size:0.8em">${cve.description.substring(0, 100)}...</div>
+                            </div>
+                        `;
+                    }
+                }
+            }
+        }
+        cvesDiv.innerHTML = cvesHTML || '<div style="color:#444">Aucune CVE critique</div>';
+    }
+
+    // Mise à jour toutes les 5 secondes
+    updateDashboard();
+    setInterval(updateDashboard, 5000);
+</script>
+
+</body>
+</html>
