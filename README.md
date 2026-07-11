@@ -20,13 +20,21 @@
 ## 🏗️ Architecture
 👻 PHANTOM
 ├── 🔴 Phantom Red        → Attaques automatisées (Nmap, Metasploit, Hydra)
+
 ├── 🌍 Phantom Intel      → CVE Intelligence (NVD API)
+
 ├── 🔵 Phantom Blue       → Détection temps réel (Suricata)
+
 ├── 🧠 Phantom Blue ML    → Détection d'anomalies (Isolation Forest)
+
 ├── 🗺️ Phantom Map        → Kill Chain MITRE ATT&CK
+
 ├── 📊 Phantom Board      → Dashboard live (Flask + WebSockets)
+
 ├── 🛡️ Phantom Score      → Score de maturité sécurité
+
 ├── 🤖 Phantom AI Analyst → Rapport IA (Groq API / LLama)
+
 └── 📄 Phantom Report     → Rapport PDF automatique
 
 ---
